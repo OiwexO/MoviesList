@@ -1,6 +1,7 @@
 package com.iwex.movies;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,13 +32,17 @@ public class MainActivity extends AppCompatActivity {
         initViews();
         viewModel = new ViewModelProvider(this).get(MainViewModel.class);
         viewModel.getMovies().observe(this, movies -> moviesAdapter.setMovies(movies));
-        viewModel.loadMovies();
+        viewModel.getIsMoviesLoading().observe(
+                this,
+                isLoading -> progressBarLoading.setVisibility(isLoading ? View.VISIBLE : View.GONE)
+        );
     }
 
     private void initViews() {
         progressBarLoading = findViewById(R.id.progressBarLoading);
         recyclerViewMovies = findViewById(R.id.recyclerViewMovies);
         moviesAdapter = new MoviesAdapter();
+        moviesAdapter.setOnReachListEndListener(() -> viewModel.loadMovies());
         recyclerViewMovies.setAdapter(moviesAdapter);
         recyclerViewMovies.setLayoutManager(new GridLayoutManager(this, RECYCLER_SPAN_COUNT));
     }

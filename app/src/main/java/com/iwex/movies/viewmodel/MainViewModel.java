@@ -24,22 +24,47 @@ public class MainViewModel extends AndroidViewModel {
 
     private final MutableLiveData<List<Movie>> movies = new MutableLiveData<>();
 
+    private final MutableLiveData<Boolean> isMoviesLoading = new MutableLiveData<>(false);
+
+    private int moviesPage = 1;
+
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     public MainViewModel(@NonNull Application application) {
         super(application);
+        loadMovies();
     }
 
     public LiveData<List<Movie>> getMovies() {
         return movies;
     }
 
+    public LiveData<Boolean> getIsMoviesLoading() {
+        return isMoviesLoading;
+    }
+
     public void loadMovies() {
-        Disposable disposable = ApiFactory.apiService.loadMovies()
+        Boolean isAlreadyLoading = isMoviesLoading.getValue();
+        if (isAlreadyLoading != null && isAlreadyLoading) {
+            return;
+        }
+
+        Disposable disposable = ApiFactory.apiService.loadMovies(moviesPage)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe((disposable1) -> isMoviesLoading.setValue(true))
+                .doAfterTerminate(() -> isMoviesLoading.setValue(false))
                 .subscribe(
-                        movieResponse -> movies.setValue(movieResponse.getMovies()),
+                        movieResponse -> {
+                            List<Movie> currentMovies = movies.getValue();
+                            if (currentMovies != null) {
+                                currentMovies.addAll(movieResponse.getMovies());
+                                movies.setValue(currentMovies);
+                            } else {
+                                movies.setValue(movieResponse.getMovies());
+                            }
+                            moviesPage++;
+                        },
                         throwable -> Log.e(TAG, throwable.toString())
                 );
         compositeDisposable.add(disposable);

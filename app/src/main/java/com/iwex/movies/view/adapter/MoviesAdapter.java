@@ -21,6 +21,8 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
 
     private List<Movie> movies = new ArrayList<>();
 
+    private OnReachListEndListener onReachListEndListener;
+
     @NonNull
     @Override
     public MovieViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -54,11 +56,23 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
             ratingBackgroundId = R.drawable.circle_movie_rating_low;
         }
         holder.textViewRating.setBackgroundResource(ratingBackgroundId);
+
+        if (position >= movies.size() - 10 && onReachListEndListener != null) {
+            onReachListEndListener.onReachListEnd();
+        }
     }
 
     public void setMovies(List<Movie> movies) {
         this.movies = movies;
         notifyDataSetChanged();
+    }
+
+    public void setOnReachListEndListener(OnReachListEndListener onReachListEndListener) {
+        this.onReachListEndListener = onReachListEndListener;
+    }
+
+    public interface OnReachListEndListener {
+        void onReachListEnd();
     }
 
     static class MovieViewHolder extends RecyclerView.ViewHolder {
