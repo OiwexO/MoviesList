@@ -26,12 +26,14 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField("String", "API_KEY", "\"${getPropertyValue('API_KEY')}\"")
+            buildConfigField("String", "BASE_URL", "\"${getPropertyValue('BASE_URL')}\"")
         }
 
         debug {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField("String", "API_KEY", "\"${getPropertyValue('API_KEY')}\"")
+            buildConfigField("String", "BASE_URL", "\"${getPropertyValue('BASE_URL')}\"")
         }
     }
     compileOptions {
