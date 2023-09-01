@@ -9,7 +9,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.iwex.movies.data.remote.api.ApiFactory;
-import com.iwex.movies.model.Movie;
+import com.iwex.movies.model.movie.Movie;
 
 import java.util.List;
 

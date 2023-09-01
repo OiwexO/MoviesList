@@ -1,8 +1,12 @@
-package com.iwex.movies.model;
+package com.iwex.movies.model.movie;
+
+import androidx.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Poster {
+import java.io.Serializable;
+
+public class Poster implements Serializable {
 
     @SerializedName("url")
     private final String url;
@@ -15,6 +19,7 @@ public class Poster {
         return url;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Poster{" +

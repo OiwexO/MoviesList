@@ -1,8 +1,12 @@
-package com.iwex.movies.model;
+package com.iwex.movies.model.movie;
+
+import androidx.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Rating {
+import java.io.Serializable;
+
+public class Rating implements Serializable {
 
     @SerializedName("kp")
     private final double kp;
@@ -23,6 +27,7 @@ public class Rating {
         return imdb;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Rating{" +

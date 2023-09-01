@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.iwex.movies.R;
-import com.iwex.movies.model.Movie;
+import com.iwex.movies.model.movie.Movie;
 import com.iwex.movies.utils.MathUtils;
 
 import java.util.ArrayList;
@@ -20,6 +20,8 @@ import java.util.List;
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewHolder> {
 
     private List<Movie> movies = new ArrayList<>();
+
+    private OnMovieClickListener onMovieClickListener;
 
     private OnReachListEndListener onReachListEndListener;
 
@@ -60,6 +62,13 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
         if (position >= movies.size() - 10 && onReachListEndListener != null) {
             onReachListEndListener.onReachListEnd();
         }
+
+        holder.itemView.setOnClickListener(v -> {
+            if (onMovieClickListener != null) {
+                onMovieClickListener.onMovieClick(movie);
+            }
+        });
+
     }
 
     public void setMovies(List<Movie> movies) {
@@ -71,8 +80,16 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
         this.onReachListEndListener = onReachListEndListener;
     }
 
+    public void setOnMovieClickListener(OnMovieClickListener onMovieClickListener) {
+        this.onMovieClickListener = onMovieClickListener;
+    }
+
     public interface OnReachListEndListener {
         void onReachListEnd();
+    }
+
+    public interface OnMovieClickListener {
+        void onMovieClick(Movie movie);
     }
 
     static class MovieViewHolder extends RecyclerView.ViewHolder {

@@ -1,8 +1,12 @@
-package com.iwex.movies.model;
+package com.iwex.movies.model.movie;
+
+import androidx.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Movie {
+import java.io.Serializable;
+
+public class Movie implements Serializable {
 
     @SerializedName("id")
     private final int id;
@@ -57,6 +61,7 @@ public class Movie {
 
 
 
+    @NonNull
     @Override
     public String toString() {
         return "Movie{" +

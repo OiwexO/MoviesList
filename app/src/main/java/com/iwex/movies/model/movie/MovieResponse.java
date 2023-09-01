@@ -1,4 +1,6 @@
-package com.iwex.movies.model;
+package com.iwex.movies.model.movie;
+
+import androidx.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -17,6 +19,7 @@ public class MovieResponse {
         return movies;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "MovieResponse{" +

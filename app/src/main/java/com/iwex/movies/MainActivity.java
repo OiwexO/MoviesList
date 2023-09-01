@@ -1,5 +1,6 @@
 package com.iwex.movies;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -9,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.iwex.movies.view.MovieDetailsActivity;
 import com.iwex.movies.view.adapter.MoviesAdapter;
 import com.iwex.movies.viewmodel.MainViewModel;
 
@@ -43,6 +45,10 @@ public class MainActivity extends AppCompatActivity {
         recyclerViewMovies = findViewById(R.id.recyclerViewMovies);
         moviesAdapter = new MoviesAdapter();
         moviesAdapter.setOnReachListEndListener(() -> viewModel.loadMovies());
+        moviesAdapter.setOnMovieClickListener((movie) -> {
+            Intent intent = MovieDetailsActivity.newIntent(MainActivity.this, movie);
+            startActivity(intent);
+        });
         recyclerViewMovies.setAdapter(moviesAdapter);
         recyclerViewMovies.setLayoutManager(new GridLayoutManager(this, RECYCLER_SPAN_COUNT));
     }
