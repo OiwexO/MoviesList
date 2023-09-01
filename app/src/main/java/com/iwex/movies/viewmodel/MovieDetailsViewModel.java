@@ -9,6 +9,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.iwex.movies.data.remote.api.ApiFactory;
+import com.iwex.movies.model.review.Review;
+import com.iwex.movies.model.review.ReviewResponse;
 import com.iwex.movies.model.trailer.Trailer;
 
 import java.util.List;
@@ -26,12 +28,18 @@ public class MovieDetailsViewModel extends AndroidViewModel {
 
     private final MutableLiveData<List<Trailer>> trailers = new MutableLiveData<>();
 
+    private final MutableLiveData<List<Review>> reviews = new MutableLiveData<>();
+
     public MovieDetailsViewModel(@NonNull Application application) {
         super(application);
     }
 
     public LiveData<List<Trailer>> getTrailers() {
         return trailers;
+    }
+
+    public LiveData<List<Review>> getReviews() {
+        return reviews;
     }
 
     public void loadTrailers(int movieId) {
@@ -43,6 +51,18 @@ public class MovieDetailsViewModel extends AndroidViewModel {
                 )
                 .subscribe(
                         trailers::setValue,
+                        throwable -> Log.e(TAG, throwable.toString())
+                );
+        compositeDisposable.add(disposable);
+    }
+
+    public void loadReviews(int movieId) {
+        Disposable disposable = ApiFactory.apiService.loadReviews(movieId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(ReviewResponse::getReviews)
+                .subscribe(
+                        reviews::setValue,
                         throwable -> Log.e(TAG, throwable.toString())
                 );
         compositeDisposable.add(disposable);

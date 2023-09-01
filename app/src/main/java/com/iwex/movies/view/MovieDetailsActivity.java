@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.iwex.movies.R;
 import com.iwex.movies.model.movie.Movie;
+import com.iwex.movies.view.adapter.ReviewsAdapter;
 import com.iwex.movies.view.adapter.TrailersAdapter;
 import com.iwex.movies.viewmodel.MovieDetailsViewModel;
 
@@ -35,7 +37,11 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
     private RecyclerView recyclerViewTrailers;
 
+    private RecyclerView recyclerViewReviews;
+
     private TrailersAdapter trailersAdapter;
+
+    private ReviewsAdapter reviewsAdapter;
 
     public static Intent newIntent(Context context, Movie movie) {
         Intent intent = new Intent(context, MovieDetailsActivity.class);
@@ -59,6 +65,11 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
         viewModel.loadTrailers(movie.getId());
         viewModel.getTrailers().observe(this, trailers -> trailersAdapter.setTrailers(trailers));
+        viewModel.loadReviews(movie.getId());
+        viewModel.getReviews().observe(this, reviews -> {
+            Log.d(TAG, reviews.toString());
+            reviewsAdapter.setReviews(reviews);
+        });
     }
 
     private void initViews() {
@@ -66,6 +77,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
         textViewDetailsName = findViewById(R.id.textViewDetailsName);
         textViewDetailsYear = findViewById(R.id.textViewDetailsYear);
         textViewDetailsDescription = findViewById(R.id.textViewDetailsDescription);
+
         recyclerViewTrailers = findViewById(R.id.recyclerViewTrailers);
         trailersAdapter = new TrailersAdapter();
         trailersAdapter.setOnTrailerClickListener(trailer -> {
@@ -75,6 +87,9 @@ public class MovieDetailsActivity extends AppCompatActivity {
         });
         recyclerViewTrailers.setAdapter(trailersAdapter);
 
+        recyclerViewReviews = findViewById(R.id.recyclerViewReviews);
+        reviewsAdapter = new ReviewsAdapter();
+        recyclerViewReviews.setAdapter(reviewsAdapter);
     }
 
 }
