@@ -9,9 +9,12 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.iwex.movies.data.remote.api.ApiFactory;
+import com.iwex.movies.model.movie.Movie;
 import com.iwex.movies.model.review.Review;
 import com.iwex.movies.model.review.ReviewResponse;
 import com.iwex.movies.model.trailer.Trailer;
+import com.iwex.movies.repository.FavouriteMoviesDao;
+import com.iwex.movies.repository.FavouriteMoviesDatabase;
 
 import java.util.List;
 
@@ -30,8 +33,11 @@ public class MovieDetailsViewModel extends AndroidViewModel {
 
     private final MutableLiveData<List<Review>> reviews = new MutableLiveData<>();
 
+    private final FavouriteMoviesDao favouriteMoviesDao;
+
     public MovieDetailsViewModel(@NonNull Application application) {
         super(application);
+        favouriteMoviesDao = FavouriteMoviesDatabase.getInstance(application).favouriteMoviesDao();
     }
 
     public LiveData<List<Trailer>> getTrailers() {
@@ -40,6 +46,24 @@ public class MovieDetailsViewModel extends AndroidViewModel {
 
     public LiveData<List<Review>> getReviews() {
         return reviews;
+    }
+
+    public LiveData<Movie> getFavouriteMovie(int movieId) {
+        return favouriteMoviesDao.getFavouriteMovieById(movieId);
+    }
+
+    public void insertMovie(Movie movie) {
+        Disposable disposable = favouriteMoviesDao.insertMovie(movie)
+                .subscribeOn(Schedulers.io())
+                .subscribe();
+        compositeDisposable.add(disposable);
+    }
+
+    public void deleteMovie(int movieId) {
+        Disposable disposable = favouriteMoviesDao.deleteMovie(movieId)
+                .subscribeOn(Schedulers.io())
+                .subscribe();
+        compositeDisposable.add(disposable);
     }
 
     public void loadTrailers(int movieId) {

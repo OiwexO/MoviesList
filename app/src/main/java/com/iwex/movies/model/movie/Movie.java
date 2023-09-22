@@ -1,13 +1,18 @@
 package com.iwex.movies.model.movie;
 
 import androidx.annotation.NonNull;
+import androidx.room.Embedded;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
+@Entity(tableName = "favourite_movies")
 public class Movie implements Serializable {
 
+    @PrimaryKey
     @SerializedName("id")
     private final int id;
 
@@ -20,9 +25,11 @@ public class Movie implements Serializable {
     @SerializedName("year")
     private final int year;
 
+    @Embedded
     @SerializedName("poster")
     private final Poster poster;
 
+    @Embedded
     @SerializedName("rating")
     private final Rating rating;
 

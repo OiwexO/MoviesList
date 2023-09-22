@@ -2,6 +2,7 @@ package com.iwex.movies.view;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -43,6 +45,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
     private ReviewsAdapter reviewsAdapter;
 
+    private ImageView imageViewFavouriteStar;
+
     public static Intent newIntent(Context context, Movie movie) {
         Intent intent = new Intent(context, MovieDetailsActivity.class);
         intent.putExtra(EXTRA_MOVIE, movie);
@@ -64,12 +68,42 @@ public class MovieDetailsActivity extends AppCompatActivity {
         textViewDetailsDescription.setText(movie.getDescription());
 
         viewModel.loadTrailers(movie.getId());
-        viewModel.getTrailers().observe(this, trailers -> trailersAdapter.setTrailers(trailers));
+        viewModel.getTrailers().observe(
+                this,
+                trailers -> trailersAdapter.setTrailers(trailers)
+        );
         viewModel.loadReviews(movie.getId());
         viewModel.getReviews().observe(this, reviews -> {
             Log.d(TAG, reviews.toString());
             reviewsAdapter.setReviews(reviews);
         });
+
+        Drawable favouriteOnDrawable = ContextCompat.getDrawable(
+                this,
+                android.R.drawable.star_big_on
+        );
+        Drawable favouriteOffDrawable = ContextCompat.getDrawable(
+                this,
+                android.R.drawable.star_big_off
+        );
+
+        viewModel.getFavouriteMovie(movie.getId()).observe(
+                this,
+                movieFromDb -> {
+                    if (movieFromDb == null) {
+                        imageViewFavouriteStar.setImageDrawable(favouriteOffDrawable);
+                        imageViewFavouriteStar.setOnClickListener(
+                                v -> viewModel.insertMovie(movie)
+                        );
+                    } else {
+                        imageViewFavouriteStar.setImageDrawable(favouriteOnDrawable);
+                        imageViewFavouriteStar.setOnClickListener(
+                                v -> viewModel.deleteMovie(movie.getId())
+                        );
+                    }
+                }
+        );
+
     }
 
     private void initViews() {
@@ -90,6 +124,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
         recyclerViewReviews = findViewById(R.id.recyclerViewReviews);
         reviewsAdapter = new ReviewsAdapter();
         recyclerViewReviews.setAdapter(reviewsAdapter);
+
+        imageViewFavouriteStar = findViewById(R.id.imageViewFavouriteStar);
     }
 
 }

@@ -2,4 +2,6 @@
     <string name="app_name">Movies</string>
     <string name="movies_poster">Movie\'s poster</string>
     <string name="play_trailer">Play trailer</string>
+    <string name="add_to_favourites_button">Add to favourites button</string>
+    <string name="favourite_movies">Favourite movies</string>
 </resources>
